@@ -290,8 +290,44 @@ function Install-ClaudeCode {
             return $true
         }
         else {
-            Write-Warning "Installation completed but 'claude' command not found."
-            Write-Info "Try reopening your terminal or run: npm list -g @anthropic-ai/claude-code"
+            Write-Warning "Installation completed but 'claude' command not found in PATH."
+            Write-Info "Attempting to fix PATH automatically..."
+
+            # Auto-fix PATH for Claude Code
+            $npmPrefix = npm config get prefix 2>$null
+            if ($npmPrefix) {
+                $possibleClaudePaths = @(
+                    "$npmPrefix",
+                    "$npmPrefix\node_modules\.bin",
+                    "$env:APPDATA\npm",
+                    "$env:APPDATA\npm\node_modules\.bin"
+                )
+
+                foreach ($claudePath in $possibleClaudePaths) {
+                    $claudeExe = Join-Path $claudePath "claude.cmd"
+                    $claudePs1 = Join-Path $claudePath "claude.ps1"
+                    if ((Test-Path $claudeExe) -or (Test-Path $claudePs1)) {
+                        Write-Info "Found Claude at: $claudePath"
+                        if (-not ($env:Path -like "*$claudePath*")) {
+                            $env:Path = "$claudePath;$env:Path"
+                            [System.Environment]::SetEnvironmentVariable("Path", "$claudePath;" + [System.Environment]::GetEnvironmentVariable("Path", "User"), "User")
+                            Write-Success "PATH updated successfully!"
+                        }
+                        break
+                    }
+                }
+
+                # Refresh and verify
+                Refresh-EnvironmentPath
+                if (Test-CommandExists "claude") {
+                    Write-Success "Claude Code CLI installed and PATH configured!"
+                    Write-Info "Run 'claude' to start using Claude Code."
+                    return $true
+                }
+            }
+
+            Write-Warning "PATH may need manual update. Please restart your terminal."
+            Write-Info "Or run: iex `"& { `$(irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.ps1) } -Verify`""
             return $true
         }
     }
@@ -502,7 +538,59 @@ function Invoke-VerifyAndFix {
                 if ($globalPackages -like "*claude-code*") {
                     $issuesFound++
                     Write-Warning "Claude Code is installed but not in PATH"
-                    Write-Info "Try restarting your terminal or run: Refresh-EnvironmentPath"
+
+                    # Auto-fix: Find and add claude to PATH
+                    Write-Info "Attempting to fix PATH for Claude Code..."
+                    $npmPrefix = npm config get prefix 2>$null
+                    if ($npmPrefix) {
+                        # Check common locations for claude executable
+                        $possibleClaudePaths = @(
+                            "$npmPrefix",
+                            "$npmPrefix\node_modules\.bin",
+                            "$env:APPDATA\npm",
+                            "$env:APPDATA\npm\node_modules\.bin",
+                            "$env:LOCALAPPDATA\npm",
+                            "$env:LOCALAPPDATA\npm\node_modules\.bin"
+                        )
+
+                        $claudeFound = $false
+                        foreach ($claudePath in $possibleClaudePaths) {
+                            $claudeExe = Join-Path $claudePath "claude.cmd"
+                            $claudePs1 = Join-Path $claudePath "claude.ps1"
+                            if ((Test-Path $claudeExe) -or (Test-Path $claudePs1)) {
+                                Write-Info "Found Claude at: $claudePath"
+                                if (-not ($env:Path -like "*$claudePath*")) {
+                                    Write-Info "Adding to PATH..."
+                                    $env:Path = "$claudePath;$env:Path"
+                                    [System.Environment]::SetEnvironmentVariable("Path", "$claudePath;" + [System.Environment]::GetEnvironmentVariable("Path", "User"), "User")
+                                    Write-Success "Claude Code PATH fixed!"
+                                    $issuesFixed++
+                                }
+                                $claudeFound = $true
+                                break
+                            }
+                        }
+
+                        if (-not $claudeFound) {
+                            # Fallback: add npm prefix to PATH
+                            if (-not ($env:Path -like "*$npmPrefix*")) {
+                                Write-Info "Adding npm prefix to PATH: $npmPrefix"
+                                $env:Path = "$npmPrefix;$env:Path"
+                                [System.Environment]::SetEnvironmentVariable("Path", "$npmPrefix;" + [System.Environment]::GetEnvironmentVariable("Path", "User"), "User")
+                                Write-Success "npm prefix added to PATH!"
+                                $issuesFixed++
+                            }
+                        }
+
+                        # Verify fix worked
+                        Refresh-EnvironmentPath
+                        if (Test-CommandExists "claude") {
+                            Write-Success "Claude Code CLI is now accessible!"
+                        }
+                        else {
+                            Write-Warning "PATH updated but claude still not found. Please restart your terminal."
+                        }
+                    }
                 }
                 else {
                     Write-Info "Claude Code CLI is not installed. Use Option 3 to install."

@@ -1006,7 +1006,58 @@ if ($doVerify) {
     Write-Color "============================================" "DarkGray"
     Write-Color ""
 
-    # Test if claude works now
+    # Check if Node.js is missing and offer to install
+    if (-not (Test-CommandExists "node")) {
+        Write-Warning "Node.js is not installed!"
+        Write-Color ""
+        $installNode = Read-Host "Do you want to install Node.js now? [Y/n]"
+        if ($installNode -ne "n" -and $installNode -ne "N") {
+            if (Test-InternetConnection) {
+                Install-NodeJS
+                Refresh-EnvironmentPath
+            }
+            else {
+                Write-Error "No internet connection. Cannot install Node.js."
+            }
+        }
+    }
+
+    # Check if npm is available after Node.js install
+    Refresh-EnvironmentPath
+
+    # Check if Claude Code is missing and offer to install
+    if (-not (Test-CommandExists "claude")) {
+        if (Test-CommandExists "npm") {
+            Write-Warning "Claude Code CLI is not installed!"
+            Write-Color ""
+            $installClaude = Read-Host "Do you want to install Claude Code CLI now? [Y/n]"
+            if ($installClaude -ne "n" -and $installClaude -ne "N") {
+                if (Test-InternetConnection) {
+                    Install-ClaudeCode
+                    Refresh-EnvironmentPath
+
+                    # Extra PATH fix: ensure npm global bin is in current session PATH
+                    $npmPrefix = npm config get prefix 2>$null
+                    if ($npmPrefix -and -not ($env:Path -like "*$npmPrefix*")) {
+                        $env:Path = "$npmPrefix;$env:Path"
+                        Write-Info "Added npm global bin to current session PATH"
+                    }
+                }
+                else {
+                    Write-Error "No internet connection. Cannot install Claude Code."
+                }
+            }
+        }
+        else {
+            Write-Warning "Cannot install Claude Code - npm is not available."
+            Write-Info "Please install Node.js first."
+        }
+    }
+
+    # Final check and display result
+    Refresh-EnvironmentPath
+    Write-Color ""
+
     if (Test-CommandExists "claude") {
         $claudeVer = claude --version 2>$null
         Write-Success "claude command is working: $claudeVer"

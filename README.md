@@ -90,6 +90,16 @@ curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/mai
 [0] Exit
 ```
 
+## One-Click Install (Windows)
+
+Download and double-click one of these batch files:
+
+| File | Description | Download |
+|------|-------------|----------|
+| `install.bat` | Interactive menu installer | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/install.bat) |
+| `verify.bat` | Verify & fix issues | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/verify.bat) |
+| `setup.bat` | Run local setup.ps1 | Requires setup.ps1 in same folder |
+
 ## Manual Installation
 
 ### Windows
@@ -97,7 +107,7 @@ curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/mai
 # Option 1: Run directly
 .\setup.ps1
 
-# Option 2: Double-click
+# Option 2: Double-click setup.bat (requires setup.ps1)
 setup.bat
 ```
 

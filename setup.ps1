@@ -770,6 +770,7 @@ function Show-Usage {
     Write-Color "  -Git         Install Git" "White"
     Write-Color "  -VSCode      Install VS Code" "White"
     Write-Color "  -Bun         Install Bun" "White"
+    Write-Color "  -Verify      Verify and fix common issues" "White"
     Write-Color "  -Help        Show this help message" "White"
     Write-Color ""
     Write-Color "Examples:" "Cyan"
@@ -777,6 +778,7 @@ function Show-Usage {
     Write-Color "  .\setup.ps1 -All                                 # Install everything" "White"
     Write-Color "  .\setup.ps1 -Node -Claude                        # Install Node.js and Claude Code" "White"
     Write-Color "  .\setup.ps1 -Git -Bun                            # Install Git and Bun" "White"
+    Write-Color "  .\setup.ps1 -Verify                              # Check and fix common issues" "White"
     Write-Color ""
 }
 
@@ -845,6 +847,7 @@ $doClaude = $false
 $doGit = $false
 $doVSCode = $false
 $doBun = $false
+$doVerify = $false
 $showHelp = $false
 
 foreach ($arg in $args) {
@@ -862,6 +865,10 @@ foreach ($arg in $args) {
         "--vscode" { $doVSCode = $true }
         "-bun" { $doBun = $true }
         "--bun" { $doBun = $true }
+        "-verify" { $doVerify = $true }
+        "--verify" { $doVerify = $true }
+        "-fix" { $doVerify = $true }
+        "--fix" { $doVerify = $true }
         "-help" { $showHelp = $true }
         "--help" { $showHelp = $true }
         "-h" { $showHelp = $true }
@@ -871,6 +878,13 @@ foreach ($arg in $args) {
 
 if ($showHelp) {
     Show-Usage
+    exit 0
+}
+
+if ($doVerify) {
+    # Run verify and fix only
+    Show-Banner
+    Invoke-VerifyAndFix
     exit 0
 }
 

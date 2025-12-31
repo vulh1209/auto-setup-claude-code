@@ -540,18 +540,87 @@ main_menu() {
 }
 
 # ============================================================================
-# ENTRY POINT
+# COMMAND LINE ARGUMENTS PARSER
 # ============================================================================
+show_usage() {
+    echo ""
+    echo "Usage: ./setup.sh [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  --all         Install everything (Node.js, Claude Code, Git, VS Code, Bun)"
+    echo "  --node        Install Node.js only"
+    echo "  --claude      Install Claude Code CLI only"
+    echo "  --git         Install Git"
+    echo "  --vscode      Install VS Code"
+    echo "  --bun         Install Bun"
+    echo "  --help        Show this help message"
+    echo ""
+    echo "Examples:"
+    echo "  curl -fsSL URL/setup.sh | bash                    # Node.js + Claude Code (default)"
+    echo "  curl -fsSL URL/setup.sh | bash -s -- --all        # Install everything"
+    echo "  curl -fsSL URL/setup.sh | bash -s -- --git --bun  # Install Git and Bun"
+    echo ""
+}
 
-# Check if running interactively or via pipe
-if [ -t 0 ]; then
-    # Interactive mode - show menu
-    main_menu
-else
-    # Piped mode (curl | bash) - auto install Node.js + Claude Code
+run_non_interactive() {
+    local install_node=false
+    local install_claude=false
+    local install_git=false
+    local install_vscode=false
+    local install_bun=false
+    local has_args=false
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        has_args=true
+        case $1 in
+            --all)
+                install_node=true
+                install_claude=true
+                install_git=true
+                install_vscode=true
+                install_bun=true
+                shift
+                ;;
+            --node)
+                install_node=true
+                shift
+                ;;
+            --claude)
+                install_claude=true
+                shift
+                ;;
+            --git)
+                install_git=true
+                shift
+                ;;
+            --vscode)
+                install_vscode=true
+                shift
+                ;;
+            --bun)
+                install_bun=true
+                shift
+                ;;
+            --help|-h)
+                show_usage
+                exit 0
+                ;;
+            *)
+                print_warning "Unknown option: $1"
+                shift
+                ;;
+        esac
+    done
+
+    # Default: install Node.js + Claude Code if no args
+    if [[ "$has_args" == "false" ]]; then
+        install_node=true
+        install_claude=true
+    fi
+
     show_banner
     print_info "Running in non-interactive mode..."
-    print_info "Auto-installing Node.js + Claude Code CLI..."
     echo ""
 
     if ! check_internet; then
@@ -559,13 +628,51 @@ else
         exit 1
     fi
 
-    install_nodejs
-    sleep 2
-    reload_shell
-    install_claude_code
+    # Install selected components
+    if [[ "$install_node" == "true" ]]; then
+        install_nodejs
+        sleep 1
+        reload_shell
+    fi
+
+    if [[ "$install_git" == "true" ]]; then
+        install_git
+        sleep 1
+    fi
+
+    if [[ "$install_vscode" == "true" ]]; then
+        install_vscode
+        sleep 1
+    fi
+
+    if [[ "$install_bun" == "true" ]]; then
+        install_bun
+        sleep 1
+    fi
+
+    if [[ "$install_claude" == "true" ]]; then
+        install_claude_code
+    fi
 
     echo ""
     print_success "Installation completed!"
-    print_info "Run 'claude' to start using Claude Code CLI."
     print_info "For interactive menu, download and run: ./setup.sh"
+}
+
+# ============================================================================
+# ENTRY POINT
+# ============================================================================
+
+# Check if running interactively or via pipe
+if [ -t 0 ]; then
+    # Interactive mode - check for --help first
+    if [[ "$1" == "--help" ]] || [[ "$1" == "-h" ]]; then
+        show_usage
+        exit 0
+    fi
+    # Show menu
+    main_menu
+else
+    # Piped mode (curl | bash) - run with arguments
+    run_non_interactive "$@"
 fi

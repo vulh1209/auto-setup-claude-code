@@ -4,15 +4,50 @@ One-click installer for Claude Code CLI and development tools across Windows, ma
 
 ## Quick Install (One-liner)
 
-### Windows (PowerShell)
+### Default (Node.js + Claude Code)
+
+**Windows (PowerShell)**
 ```powershell
 irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.ps1 | iex
 ```
 
-### macOS / Linux
+**macOS / Linux**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.sh | bash
 ```
+
+### Install Everything (Full Setup)
+
+**Windows (PowerShell)**
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.ps1))) -All
+```
+
+**macOS / Linux**
+```bash
+curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.sh | bash -s -- --all
+```
+
+### Custom Installation
+
+**macOS / Linux** - Select specific tools:
+```bash
+# Install Git and Bun only
+curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.sh | bash -s -- --git --bun
+
+# Install Node.js, Claude Code, and VS Code
+curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.sh | bash -s -- --node --claude --vscode
+```
+
+**Available Options:**
+| Option | Description |
+|--------|-------------|
+| `--all` | Install everything |
+| `--node` | Install Node.js |
+| `--claude` | Install Claude Code CLI |
+| `--git` | Install Git |
+| `--vscode` | Install VS Code |
+| `--bun` | Install Bun |
 
 ## What Gets Installed
 

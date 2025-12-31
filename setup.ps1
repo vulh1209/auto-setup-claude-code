@@ -757,6 +757,128 @@ function Start-MainMenu {
 }
 
 # ============================================================================
+# COMMAND LINE ARGUMENTS HANDLER
+# ============================================================================
+function Show-Usage {
+    Write-Color ""
+    Write-Color "Usage: .\setup.ps1 [OPTIONS]" "White"
+    Write-Color ""
+    Write-Color "Options:" "Cyan"
+    Write-Color "  -All         Install everything (Node.js, Claude Code, Git, VS Code, Bun)" "White"
+    Write-Color "  -Node        Install Node.js only" "White"
+    Write-Color "  -Claude      Install Claude Code CLI only" "White"
+    Write-Color "  -Git         Install Git" "White"
+    Write-Color "  -VSCode      Install VS Code" "White"
+    Write-Color "  -Bun         Install Bun" "White"
+    Write-Color "  -Help        Show this help message" "White"
+    Write-Color ""
+    Write-Color "Examples:" "Cyan"
+    Write-Color "  irm URL | iex                                    # Interactive menu" "White"
+    Write-Color "  .\setup.ps1 -All                                 # Install everything" "White"
+    Write-Color "  .\setup.ps1 -Node -Claude                        # Install Node.js and Claude Code" "White"
+    Write-Color "  .\setup.ps1 -Git -Bun                            # Install Git and Bun" "White"
+    Write-Color ""
+}
+
+function Invoke-NonInteractive {
+    param(
+        [switch]$InstallAll,
+        [switch]$InstallNode,
+        [switch]$InstallClaude,
+        [switch]$InstallGit,
+        [switch]$InstallVSCode,
+        [switch]$InstallBun
+    )
+
+    Show-Banner
+    Write-Info "Running in non-interactive mode..."
+    Write-Color ""
+
+    if (-not (Test-InternetConnection)) {
+        Write-Error "No internet connection detected."
+        exit 1
+    }
+
+    # Install selected components
+    if ($InstallAll -or $InstallNode) {
+        Install-NodeJS
+        Start-Sleep -Seconds 1
+        Refresh-EnvironmentPath
+    }
+
+    if ($InstallAll -or $InstallGit) {
+        Install-Git
+        Start-Sleep -Seconds 1
+        Refresh-EnvironmentPath
+    }
+
+    if ($InstallAll -or $InstallVSCode) {
+        Install-VSCode
+        Start-Sleep -Seconds 1
+        Refresh-EnvironmentPath
+    }
+
+    if ($InstallAll -or $InstallBun) {
+        Install-Bun
+        Start-Sleep -Seconds 1
+        Refresh-EnvironmentPath
+    }
+
+    if ($InstallAll -or $InstallClaude) {
+        Install-ClaudeCode
+    }
+
+    Write-Color ""
+    Write-Success "Installation completed!"
+    Write-Info "For interactive menu, run: .\setup.ps1"
+}
+
+# ============================================================================
 # ENTRY POINT
 # ============================================================================
-Start-MainMenu
+
+# Parse command line arguments
+$hasArgs = $false
+$doAll = $false
+$doNode = $false
+$doClaude = $false
+$doGit = $false
+$doVSCode = $false
+$doBun = $false
+$showHelp = $false
+
+foreach ($arg in $args) {
+    $hasArgs = $true
+    switch -Wildcard ($arg.ToLower()) {
+        "-all" { $doAll = $true }
+        "--all" { $doAll = $true }
+        "-node" { $doNode = $true }
+        "--node" { $doNode = $true }
+        "-claude" { $doClaude = $true }
+        "--claude" { $doClaude = $true }
+        "-git" { $doGit = $true }
+        "--git" { $doGit = $true }
+        "-vscode" { $doVSCode = $true }
+        "--vscode" { $doVSCode = $true }
+        "-bun" { $doBun = $true }
+        "--bun" { $doBun = $true }
+        "-help" { $showHelp = $true }
+        "--help" { $showHelp = $true }
+        "-h" { $showHelp = $true }
+        default { Write-Warning "Unknown option: $arg" }
+    }
+}
+
+if ($showHelp) {
+    Show-Usage
+    exit 0
+}
+
+if ($hasArgs) {
+    # Non-interactive mode with arguments
+    Invoke-NonInteractive -InstallAll:$doAll -InstallNode:$doNode -InstallClaude:$doClaude -InstallGit:$doGit -InstallVSCode:$doVSCode -InstallBun:$doBun
+}
+else {
+    # Interactive mode - show menu
+    Start-MainMenu
+}

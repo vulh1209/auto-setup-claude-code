@@ -20,13 +20,26 @@ curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/mai
 
 **Windows (PowerShell)**
 ```powershell
-& ([scriptblock]::Create((irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.ps1))) -All
+iex "& { $(irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.ps1) } -All"
 ```
 
 **macOS / Linux**
 ```bash
 curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.sh | bash -s -- --all
 ```
+
+### Verify & Fix Issues (Windows only)
+
+**Windows (PowerShell)** - Check system and auto-fix common issues:
+```powershell
+iex "& { $(irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.ps1) } -Verify"
+```
+
+This will:
+- Check PowerShell Execution Policy and fix if needed
+- Verify Node.js, npm, and Claude Code installation
+- Auto-fix PATH issues
+- Offer to install missing components
 
 ### Custom Installation
 
@@ -42,12 +55,13 @@ curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/mai
 **Available Options:**
 | Option | Description |
 |--------|-------------|
-| `--all` | Install everything |
-| `--node` | Install Node.js |
-| `--claude` | Install Claude Code CLI |
-| `--git` | Install Git |
-| `--vscode` | Install VS Code |
-| `--bun` | Install Bun |
+| `--all` / `-All` | Install everything |
+| `--node` / `-Node` | Install Node.js |
+| `--claude` / `-Claude` | Install Claude Code CLI |
+| `--git` / `-Git` | Install Git |
+| `--vscode` / `-VSCode` | Install VS Code |
+| `--bun` / `-Bun` | Install Bun |
+| `-Verify` | Verify system and fix common issues (Windows only) |
 
 ## What Gets Installed
 
@@ -72,6 +86,7 @@ curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/mai
 [7] Install Everything (Full Setup)
 [8] Check installed versions
 [9] Uninstall Claude Code CLI
+[V] Verify & Fix Common Issues
 [0] Exit
 ```
 

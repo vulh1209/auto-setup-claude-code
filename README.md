@@ -108,7 +108,9 @@ Download and double-click to install:
 | `install.command` | Interactive menu installer | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/install.command) |
 | `install-all.command` | Install everything | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/install-all.command) |
 
-> **Note for macOS**: After downloading, you may need to right-click > Open the first time, or run `chmod +x install.command` in Terminal.
+> **Note for macOS**: First time running, you'll see a Gatekeeper warning. To fix:
+> 1. Right-click the file > **Open** > Click **Open** in the dialog, OR
+> 2. Go to **System Settings** > **Privacy & Security** > Click **Open Anyway**
 
 ## Manual Installation
 

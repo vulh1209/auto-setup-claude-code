@@ -534,4 +534,30 @@ main_menu() {
 # ============================================================================
 # ENTRY POINT
 # ============================================================================
-main_menu
+
+# Check if running interactively or via pipe
+if [ -t 0 ]; then
+    # Interactive mode - show menu
+    main_menu
+else
+    # Piped mode (curl | bash) - auto install Node.js + Claude Code
+    show_banner
+    print_info "Running in non-interactive mode..."
+    print_info "Auto-installing Node.js + Claude Code CLI..."
+    echo ""
+
+    if ! check_internet; then
+        print_error "No internet connection detected."
+        exit 1
+    fi
+
+    install_nodejs
+    sleep 2
+    reload_shell
+    install_claude_code
+
+    echo ""
+    print_success "Installation completed!"
+    print_info "Run 'claude' to start using Claude Code CLI."
+    print_info "For interactive menu, download and run: ./setup.sh"
+fi

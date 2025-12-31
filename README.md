@@ -90,27 +90,14 @@ curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/mai
 [0] Exit
 ```
 
-## One-Click Install
+## One-Click Install (Windows)
 
 Download and double-click to install:
-
-### Windows (.bat files)
 
 | File | Description | Download |
 |------|-------------|----------|
 | `install.bat` | Interactive menu installer | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/install.bat) |
 | `verify.bat` | Verify & fix issues | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/verify.bat) |
-
-### macOS (.command files)
-
-| File | Description | Download |
-|------|-------------|----------|
-| `install.command` | Interactive menu installer | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/install.command) |
-| `install-all.command` | Install everything | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/install-all.command) |
-
-> **Note for macOS**: First time running, you'll see a Gatekeeper warning. To fix:
-> 1. Right-click the file > **Open** > Click **Open** in the dialog, OR
-> 2. Go to **System Settings** > **Privacy & Security** > Click **Open Anyway**
 
 ## Manual Installation
 

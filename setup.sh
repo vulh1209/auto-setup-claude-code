@@ -104,19 +104,20 @@ check_internet() {
 }
 
 reload_shell() {
-    if [[ -f ~/.bashrc ]]; then
-        source ~/.bashrc >/dev/null 2>&1 || true
-    fi
-    if [[ -f ~/.zshrc ]]; then
-        source ~/.zshrc >/dev/null 2>&1 || true
-    fi
-    # Add common paths
-    export PATH="$PATH:/usr/local/bin:$HOME/.npm-global/bin"
+    # Don't source shell configs as they may produce output
+    # Just add common paths directly
+    export PATH="/usr/local/bin:$HOME/.npm-global/bin:$PATH"
+
     # Add Homebrew paths for macOS
-    if [[ -f /opt/homebrew/bin/brew ]]; then
-        eval "$(/opt/homebrew/bin/brew shellenv)" >/dev/null 2>&1 || true
-    elif [[ -f /usr/local/bin/brew ]]; then
-        eval "$(/usr/local/bin/brew shellenv)" >/dev/null 2>&1 || true
+    if [[ -d /opt/homebrew/bin ]]; then
+        export PATH="/opt/homebrew/bin:$PATH"
+    elif [[ -d /usr/local/bin ]]; then
+        export PATH="/usr/local/bin:$PATH"
+    fi
+
+    # Add Node.js global bin
+    if [[ -d /usr/local/lib/node_modules/.bin ]]; then
+        export PATH="/usr/local/lib/node_modules/.bin:$PATH"
     fi
 }
 

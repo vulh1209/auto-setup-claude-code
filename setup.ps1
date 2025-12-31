@@ -67,6 +67,7 @@ function Show-Menu {
     Write-Color "  [7] Install Everything (Full Setup)" "Yellow"
     Write-Color "  [8] Check installed versions" "White"
     Write-Color "  [9] Uninstall Claude Code CLI" "White"
+    Write-Color "  [V] Verify & Fix Common Issues" "Magenta"
     Write-Color ""
     Write-Color "  [0] Exit" "DarkGray"
     Write-Color ""
@@ -76,6 +77,21 @@ function Show-Menu {
 # ============================================================================
 # UTILITY FUNCTIONS
 # ============================================================================
+function Set-ExecutionPolicyIfNeeded {
+    $currentPolicy = Get-ExecutionPolicy -Scope CurrentUser
+    if ($currentPolicy -eq "Restricted" -or $currentPolicy -eq "Undefined") {
+        Write-Info "Setting PowerShell Execution Policy to RemoteSigned..."
+        try {
+            Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+            Write-Success "Execution Policy set to RemoteSigned for current user."
+        }
+        catch {
+            Write-Warning "Could not set Execution Policy automatically."
+            Write-Info "Please run: Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser"
+        }
+    }
+}
+
 function Test-Administrator {
     $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
     $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
@@ -260,6 +276,10 @@ function Install-ClaudeCode {
     }
 
     Write-Info "Installing Claude Code CLI..."
+
+    # Fix Execution Policy to allow npm scripts to run
+    Set-ExecutionPolicyIfNeeded
+
     try {
         npm install -g @anthropic-ai/claude-code
         Refresh-EnvironmentPath
@@ -341,6 +361,9 @@ function Uninstall-ClaudeCode {
         return $false
     }
 
+    # Fix Execution Policy to allow npm scripts to run
+    Set-ExecutionPolicyIfNeeded
+
     try {
         npm uninstall -g @anthropic-ai/claude-code
         Write-Success "Claude Code CLI uninstalled successfully!"
@@ -350,6 +373,200 @@ function Uninstall-ClaudeCode {
         Write-Error "Failed to uninstall Claude Code CLI: $_"
         return $false
     }
+}
+
+# ============================================================================
+# VERIFY AND FIX COMMON ISSUES
+# ============================================================================
+function Invoke-VerifyAndFix {
+    Write-Color ""
+    Write-Color "============================================" "DarkGray"
+    Write-Color "  VERIFY & FIX COMMON ISSUES" "Magenta"
+    Write-Color "============================================" "DarkGray"
+    Write-Color ""
+
+    $issuesFound = 0
+    $issuesFixed = 0
+
+    # 1. Check Execution Policy
+    Write-Info "Checking PowerShell Execution Policy..."
+    $currentPolicy = Get-ExecutionPolicy -Scope CurrentUser
+    $machinePolicy = Get-ExecutionPolicy -Scope LocalMachine
+    Write-Color "  Current User Policy: $currentPolicy" "White"
+    Write-Color "  Local Machine Policy: $machinePolicy" "White"
+
+    if ($currentPolicy -eq "Restricted" -or $currentPolicy -eq "Undefined") {
+        $issuesFound++
+        Write-Warning "Execution Policy is blocking scripts!"
+        Write-Info "Fixing: Setting Execution Policy to RemoteSigned..."
+        try {
+            Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+            Write-Success "Execution Policy fixed!"
+            $issuesFixed++
+        }
+        catch {
+            Write-Error "Could not fix automatically. Run as Administrator or execute:"
+            Write-Color "  Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser" "Yellow"
+        }
+    }
+    else {
+        Write-Success "Execution Policy is OK ($currentPolicy)"
+    }
+
+    Write-Color ""
+
+    # 2. Check PATH for Node.js
+    Write-Info "Checking Node.js in PATH..."
+    if (Test-CommandExists "node") {
+        $nodePath = (Get-Command node).Source
+        Write-Success "Node.js found: $nodePath"
+    }
+    else {
+        $issuesFound++
+        Write-Warning "Node.js not found in PATH"
+        # Check if Node.js is installed but not in PATH
+        $possiblePaths = @(
+            "$env:ProgramFiles\nodejs",
+            "${env:ProgramFiles(x86)}\nodejs",
+            "$env:LOCALAPPDATA\Programs\nodejs"
+        )
+        foreach ($path in $possiblePaths) {
+            if (Test-Path "$path\node.exe") {
+                Write-Info "Found Node.js at: $path"
+                Write-Info "Adding to PATH..."
+                $env:Path = "$path;$env:Path"
+                [System.Environment]::SetEnvironmentVariable("Path", "$path;" + [System.Environment]::GetEnvironmentVariable("Path", "User"), "User")
+                Write-Success "Node.js added to PATH!"
+                $issuesFixed++
+                break
+            }
+        }
+    }
+
+    Write-Color ""
+
+    # 3. Check PATH for npm
+    Write-Info "Checking npm in PATH..."
+    if (Test-CommandExists "npm") {
+        $npmPath = (Get-Command npm).Source
+        Write-Success "npm found: $npmPath"
+    }
+    else {
+        $issuesFound++
+        Write-Warning "npm not found in PATH"
+        Write-Info "npm should be installed with Node.js. Try reinstalling Node.js (Option 2)"
+    }
+
+    Write-Color ""
+
+    # 4. Check npm global prefix
+    Write-Info "Checking npm global configuration..."
+    if (Test-CommandExists "npm") {
+        try {
+            $npmPrefix = npm config get prefix 2>$null
+            Write-Color "  npm global prefix: $npmPrefix" "White"
+
+            # Check if npm global bin is in PATH
+            $npmBin = "$npmPrefix"
+            if (-not ($env:Path -like "*$npmBin*")) {
+                $issuesFound++
+                Write-Warning "npm global bin directory not in PATH"
+                Write-Info "Adding npm global bin to PATH..."
+                $env:Path = "$npmBin;$env:Path"
+                [System.Environment]::SetEnvironmentVariable("Path", "$npmBin;" + [System.Environment]::GetEnvironmentVariable("Path", "User"), "User")
+                Write-Success "npm global bin added to PATH!"
+                $issuesFixed++
+            }
+            else {
+                Write-Success "npm global bin is in PATH"
+            }
+        }
+        catch {
+            Write-Warning "Could not check npm configuration"
+        }
+    }
+
+    Write-Color ""
+
+    # 5. Check Claude Code installation
+    Write-Info "Checking Claude Code CLI..."
+    if (Test-CommandExists "claude") {
+        $claudeVersion = claude --version 2>$null
+        Write-Success "Claude Code CLI is working: $claudeVersion"
+    }
+    else {
+        if (Test-CommandExists "npm") {
+            # Check if claude is installed but not in PATH
+            try {
+                $globalPackages = npm list -g @anthropic-ai/claude-code 2>$null
+                if ($globalPackages -like "*claude-code*") {
+                    $issuesFound++
+                    Write-Warning "Claude Code is installed but not in PATH"
+                    Write-Info "Try restarting your terminal or run: Refresh-EnvironmentPath"
+                }
+                else {
+                    Write-Info "Claude Code CLI is not installed. Use Option 3 to install."
+                }
+            }
+            catch {
+                Write-Info "Claude Code CLI is not installed. Use Option 3 to install."
+            }
+        }
+        else {
+            Write-Info "Install Node.js first (Option 2), then install Claude Code (Option 3)"
+        }
+    }
+
+    Write-Color ""
+
+    # 6. Test npm script execution
+    Write-Info "Testing npm script execution..."
+    if (Test-CommandExists "npm") {
+        try {
+            $npmVersion = & npm --version 2>&1
+            if ($npmVersion -match "^\d+\.\d+\.\d+$") {
+                Write-Success "npm scripts can execute properly (npm v$npmVersion)"
+            }
+            else {
+                $issuesFound++
+                Write-Warning "npm script execution may have issues"
+                Write-Color "  Output: $npmVersion" "Yellow"
+            }
+        }
+        catch {
+            $issuesFound++
+            Write-Error "npm script execution failed: $_"
+            Write-Info "This is likely an Execution Policy issue. Fixing..."
+            Set-ExecutionPolicyIfNeeded
+        }
+    }
+
+    Write-Color ""
+
+    # Summary
+    Write-Color "============================================" "DarkGray"
+    Write-Color "  SUMMARY" "White"
+    Write-Color "============================================" "DarkGray"
+    if ($issuesFound -eq 0) {
+        Write-Success "No issues found! Your system is ready."
+    }
+    else {
+        Write-Color "  Issues found: $issuesFound" "Yellow"
+        Write-Color "  Issues fixed: $issuesFixed" "Green"
+        if ($issuesFound -gt $issuesFixed) {
+            Write-Warning "Some issues require manual intervention. See details above."
+        }
+        else {
+            Write-Success "All issues have been fixed!"
+        }
+    }
+
+    Write-Color ""
+    Write-Info "If you still have issues, try:"
+    Write-Color "  1. Restart PowerShell/Terminal" "White"
+    Write-Color "  2. Run this script as Administrator" "White"
+    Write-Color "  3. Reinstall Node.js (Option 2)" "White"
+    Write-Color ""
 }
 
 # ============================================================================
@@ -427,7 +644,7 @@ function Start-MainMenu {
         Show-Banner
         Show-Menu
 
-        $choice = Read-Host "Enter your choice [0-9]"
+        $choice = Read-Host "Enter your choice [0-9, V]"
         Write-Color ""
 
         switch ($choice) {
@@ -514,6 +731,14 @@ function Start-MainMenu {
                 # Uninstall Claude Code
                 Uninstall-ClaudeCode
             }
+            "V" {
+                # Verify and Fix Common Issues
+                Invoke-VerifyAndFix
+            }
+            "v" {
+                # Verify and Fix Common Issues (lowercase)
+                Invoke-VerifyAndFix
+            }
             "0" {
                 Write-Color ""
                 Write-Info "Goodbye! Happy coding with Claude Code!"
@@ -521,7 +746,7 @@ function Start-MainMenu {
                 return
             }
             default {
-                Write-Warning "Invalid option. Please enter a number between 0-9."
+                Write-Warning "Invalid option. Please enter a number between 0-9 or V."
             }
         }
 

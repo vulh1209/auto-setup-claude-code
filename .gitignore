@@ -33,6 +33,10 @@ yarn-error.log*
 .classpath
 .settings/
 
+# Local settings
+settings.local.json
+*.local.json
+
 # Node modules (if any test scripts use them)
 node_modules/
 

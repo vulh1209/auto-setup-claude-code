@@ -424,6 +424,29 @@ function Invoke-VerifyAndFix {
     $issuesFound = 0
     $issuesFixed = 0
 
+    # 0. System Information
+    Write-Info "System Information"
+    try {
+        $osInfo = Get-CimInstance -ClassName Win32_OperatingSystem
+        $cpuInfo = Get-CimInstance -ClassName Win32_Processor
+        $archType = switch ($cpuInfo.Architecture) {
+            0 { "x86" }
+            5 { "ARM" }
+            9 { "x64" }
+            12 { "ARM64" }
+            default { "Unknown" }
+        }
+        Write-Color "  OS: $($osInfo.Caption) (Build $($osInfo.BuildNumber))" "White"
+        Write-Color "  Architecture: $($osInfo.OSArchitecture) / $archType" "White"
+        Write-Color "  PowerShell: $($PSVersionTable.PSVersion)" "White"
+        Write-Success "System info collected"
+    }
+    catch {
+        Write-Warning "Could not get system info"
+    }
+
+    Write-Color ""
+
     # 1. Check Execution Policy
     Write-Info "Checking PowerShell Execution Policy..."
     $currentPolicy = Get-ExecutionPolicy -Scope CurrentUser

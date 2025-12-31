@@ -996,6 +996,35 @@ if ($doVerify) {
     # Run verify and fix only
     Show-Banner
     Invoke-VerifyAndFix
+
+    # Refresh PATH in current session after fixes
+    Refresh-EnvironmentPath
+
+    Write-Color ""
+    Write-Color "============================================" "DarkGray"
+    Write-Color "  TEST CLAUDE CODE" "Cyan"
+    Write-Color "============================================" "DarkGray"
+    Write-Color ""
+
+    # Test if claude works now
+    if (Test-CommandExists "claude") {
+        $claudeVer = claude --version 2>$null
+        Write-Success "claude command is working: $claudeVer"
+        Write-Color ""
+        Write-Info "You can now use 'claude' in this terminal!"
+    }
+    else {
+        Write-Warning "claude command still not found in this session."
+        Write-Color ""
+        Write-Info "PATH has been updated. To use claude:"
+        Write-Color "  Option 1: Close this window and open a NEW terminal" "Yellow"
+        Write-Color "  Option 2: Run this command to refresh PATH:" "Yellow"
+        Write-Color '  $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")' "White"
+    }
+
+    Write-Color ""
+    Write-Color "============================================" "DarkGray"
+    Read-Host "Press Enter to exit..."
     exit 0
 }
 

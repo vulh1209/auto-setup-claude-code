@@ -1027,30 +1027,53 @@ if ($doVerify) {
 
     # Check if Claude Code is missing and offer to install
     if (-not (Test-CommandExists "claude")) {
+        # Double check if claude is really not installed (not just PATH issue)
+        $claudeInstalled = $false
         if (Test-CommandExists "npm") {
-            Write-Warning "Claude Code CLI is not installed!"
-            Write-Color ""
-            $installClaude = Read-Host "Do you want to install Claude Code CLI now? [Y/n]"
-            if ($installClaude -ne "n" -and $installClaude -ne "N") {
-                if (Test-InternetConnection) {
-                    Install-ClaudeCode
-                    Refresh-EnvironmentPath
+            try {
+                $globalPackages = npm list -g @anthropic-ai/claude-code 2>$null
+                if ($globalPackages -like "*claude-code*") {
+                    $claudeInstalled = $true
+                }
+            }
+            catch { }
+        }
 
-                    # Extra PATH fix: ensure npm global bin is in current session PATH
-                    $npmPrefix = npm config get prefix 2>$null
-                    if ($npmPrefix -and -not ($env:Path -like "*$npmPrefix*")) {
-                        $env:Path = "$npmPrefix;$env:Path"
-                        Write-Info "Added npm global bin to current session PATH"
+        if (-not $claudeInstalled) {
+            if (Test-CommandExists "npm") {
+                Write-Warning "Claude Code CLI is not installed!"
+                Write-Color ""
+                $installClaude = Read-Host "Do you want to install Claude Code CLI now? [Y/n]"
+                if ($installClaude -ne "n" -and $installClaude -ne "N") {
+                    if (Test-InternetConnection) {
+                        Install-ClaudeCode
+                        Refresh-EnvironmentPath
+
+                        # Extra PATH fix: ensure npm global bin is in current session PATH
+                        $npmPrefix = npm config get prefix 2>$null
+                        if ($npmPrefix -and -not ($env:Path -like "*$npmPrefix*")) {
+                            $env:Path = "$npmPrefix;$env:Path"
+                            Write-Info "Added npm global bin to current session PATH"
+                        }
+                    }
+                    else {
+                        Write-Error "No internet connection. Cannot install Claude Code."
                     }
                 }
-                else {
-                    Write-Error "No internet connection. Cannot install Claude Code."
-                }
+            }
+            else {
+                Write-Warning "Cannot install Claude Code - npm is not available."
+                Write-Info "Please install Node.js first."
             }
         }
         else {
-            Write-Warning "Cannot install Claude Code - npm is not available."
-            Write-Info "Please install Node.js first."
+            Write-Info "Claude Code is installed but not in PATH. Attempting fix..."
+            # Try to fix PATH
+            $npmPrefix = npm config get prefix 2>$null
+            if ($npmPrefix) {
+                $env:Path = "$npmPrefix;$env:Path"
+                Refresh-EnvironmentPath
+            }
         }
     }
 

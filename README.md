@@ -16,7 +16,7 @@ Desktop installer for Claude Code CLI and development tools. Download, double-cl
 | **Linux** | [Claude Code Installer.AppImage](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/claude-code-installer_1.0.0_amd64.AppImage) | x64 |
 | **Linux (Debian)** | [claude-code-installer.deb](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/claude-code-installer_1.0.0_amd64.deb) | x64 |
 
-> **Note**: Download links will be available after the first release. To create a release, push a tag: `git tag v1.0.0 && git push origin v1.0.0`
+> **Note**: Download links will work after the release is published. To create a new release: `git tag v1.1.0 && git push origin v1.1.0`
 
 ## Features
 

@@ -59,11 +59,15 @@ out/
 
 # Tauri / Rust
 src-tauri/target/
+src-tauri/gen/
 *.dmg
 *.exe
 *.AppImage
 *.deb
 *.msi
+
+# Claude Code local config
+.claude/
 
 # Package lock (use npm install from package.json)
 package-lock.json

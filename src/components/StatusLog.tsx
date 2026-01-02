@@ -11,80 +11,47 @@ interface StatusLogProps {
 function StatusLog({ logs }: StatusLogProps) {
   if (logs.length === 0) return null;
 
-  const getLogStyles = (type: LogEntry["type"]) => {
+  const getLogPrefix = (type: LogEntry["type"]) => {
     switch (type) {
       case "success":
-        return "text-green-400 bg-green-950/30";
+        return { symbol: "✓", color: "text-green-400" };
       case "error":
-        return "text-red-400 bg-red-950/30";
+        return { symbol: "✗", color: "text-red-400" };
       case "warning":
-        return "text-amber-400 bg-amber-950/30";
+        return { symbol: "!", color: "text-amber-400" };
       default:
-        return "text-neutral-300 bg-neutral-900";
-    }
-  };
-
-  const getLogIcon = (type: LogEntry["type"]) => {
-    switch (type) {
-      case "success":
-        return (
-          <svg className="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clipRule="evenodd"
-            />
-          </svg>
-        );
-      case "error":
-        return (
-          <svg className="w-4 h-4 text-red-500" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-              clipRule="evenodd"
-            />
-          </svg>
-        );
-      case "warning":
-        return (
-          <svg className="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-              clipRule="evenodd"
-            />
-          </svg>
-        );
-      default:
-        return (
-          <svg className="w-4 h-4 text-neutral-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-              clipRule="evenodd"
-            />
-          </svg>
-        );
+        return { symbol: "›", color: "text-claude-500" };
     }
   };
 
   return (
-    <div className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden max-h-48 overflow-y-auto">
-      {logs.map((log, index) => (
-        <div
-          key={index}
-          className={`flex items-start gap-2 px-3 py-2 text-sm ${getLogStyles(
-            log.type
-          )} ${index !== logs.length - 1 ? "border-b border-neutral-800" : ""}`}
-        >
-          <span className="flex-shrink-0 mt-0.5">{getLogIcon(log.type)}</span>
-          <span className="flex-1 break-words">{log.message}</span>
-          <span className="flex-shrink-0 text-xs text-neutral-500">
-            {log.timestamp.toLocaleTimeString()}
-          </span>
-        </div>
-      ))}
+    <div className="glass-card overflow-hidden max-h-48 overflow-y-auto font-mono text-sm">
+      {logs.map((log, index) => {
+        const prefix = getLogPrefix(log.type);
+        return (
+          <div
+            key={index}
+            className={`flex items-start gap-2 px-3 py-2 ${
+              index !== logs.length - 1 ? "border-b border-white/5" : ""
+            }`}
+          >
+            <span className={`flex-shrink-0 ${prefix.color} font-bold`}>
+              {prefix.symbol}
+            </span>
+            <span className="flex-1 break-words text-neutral-300">
+              {log.message}
+            </span>
+            <span className="flex-shrink-0 text-xs text-neutral-600">
+              {log.timestamp.toLocaleTimeString("en-US", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
+              })}
+            </span>
+          </div>
+        );
+      })}
     </div>
   );
 }

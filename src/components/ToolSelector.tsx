@@ -18,12 +18,12 @@ function ToolSelector({
       {tools.map((tool) => (
         <label
           key={tool.id}
-          className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 cursor-pointer ${
+          className={`glass-card flex items-center gap-3 p-3 transition-all duration-200 cursor-pointer ${
             tool.installed
-              ? "bg-green-950/50 border-green-800"
+              ? "!border-green-500/30 !bg-green-950/20"
               : selectedTools.has(tool.id)
-              ? "bg-claude-950/50 border-claude-700"
-              : "bg-neutral-900 border-neutral-800 hover:border-neutral-700"
+              ? "!border-claude-500/40 !bg-claude-950/20"
+              : ""
           } ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
         >
           <input
@@ -35,14 +35,14 @@ function ToolSelector({
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-neutral-100">{tool.name}</span>
+              <span className="font-medium text-neutral-200">{tool.name}</span>
               {tool.required && !tool.installed && (
-                <span className="text-xs px-1.5 py-0.5 bg-amber-900/50 text-amber-400 rounded">
-                  Required
+                <span className="text-xs px-1.5 py-0.5 bg-claude-500/20 text-claude-400 rounded border border-claude-500/30 font-mono">
+                  required
                 </span>
               )}
               {tool.installed && (
-                <span className="text-xs px-1.5 py-0.5 bg-green-900/50 text-green-400 rounded flex items-center gap-1">
+                <span className="text-xs px-1.5 py-0.5 bg-green-500/20 text-green-400 rounded border border-green-500/30 flex items-center gap-1 font-mono">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fillRule="evenodd"
@@ -50,14 +50,14 @@ function ToolSelector({
                       clipRule="evenodd"
                     />
                   </svg>
-                  Installed
+                  installed
                 </span>
               )}
             </div>
-            <p className="text-sm text-neutral-400 truncate">
+            <p className="text-sm text-neutral-500 truncate font-mono">
               {tool.description}
               {tool.version && (
-                <span className="text-neutral-500"> • {tool.version}</span>
+                <span className="text-claude-500/70"> • v{tool.version.replace(/^v/, '')}</span>
               )}
             </p>
           </div>

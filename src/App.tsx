@@ -155,11 +155,11 @@ function App() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-neutral-950 flex flex-col">
+    <div className="min-h-screen bg-charcoal-950 flex flex-col font-mono">
       {/* Header */}
-      <header className="bg-neutral-900 border-b border-neutral-800 px-6 py-4">
+      <header className="glass-card rounded-none border-x-0 border-t-0 px-6 py-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-claude-600 rounded-lg flex items-center justify-center">
+          <div className="w-10 h-10 bg-gradient-to-br from-claude-400 to-claude-600 rounded-lg flex items-center justify-center terminal-glow">
             <svg
               className="w-6 h-6 text-white"
               fill="none"
@@ -175,12 +175,12 @@ function App() {
             </svg>
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-neutral-100">
+            <h1 className="text-lg font-semibold text-white tracking-tight">
               Claude Code Installer
             </h1>
             {systemInfo && (
-              <p className="text-sm text-neutral-400">
-                {getOsLabel(systemInfo.os)} • {systemInfo.arch}
+              <p className="text-sm text-neutral-500 font-mono">
+                <span className="text-claude-500">$</span> {getOsLabel(systemInfo.os)} • {systemInfo.arch}
                 {systemInfo.package_manager &&
                   ` • ${systemInfo.package_manager}`}
               </p>
@@ -192,8 +192,8 @@ function App() {
       {/* Main content */}
       <main className="flex-1 p-6">
         <div className="mb-4">
-          <h2 className="text-sm font-medium text-neutral-300 mb-3">
-            Select tools to install:
+          <h2 className="text-sm font-medium text-neutral-400 mb-3 flex items-center gap-2">
+            <span className="text-claude-500">&gt;</span> Select tools to install:
           </h2>
           <ToolSelector
             tools={tools}
@@ -213,14 +213,14 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-neutral-900 border-t border-neutral-800 px-6 py-4">
+      <footer className="glass-card rounded-none border-x-0 border-b-0 px-6 py-4">
         <button
           onClick={handleInstall}
           disabled={isInstalling || toolsToInstallCount === 0}
-          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
+          className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 ${
             isInstalling || toolsToInstallCount === 0
-              ? "bg-neutral-800 text-neutral-500 cursor-not-allowed"
-              : "bg-claude-600 text-white hover:bg-claude-700 active:bg-claude-800"
+              ? "bg-charcoal-800 text-neutral-600 cursor-not-allowed border border-charcoal-700"
+              : "bg-gradient-to-r from-claude-500 to-claude-600 text-white hover:from-claude-400 hover:to-claude-500 btn-glow"
           }`}
         >
           {isInstalling

@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: "IBM Plex Mono", "JetBrains Mono", monospace;
+  line-height: 1.6;
   font-weight: 400;
   color: #e5e5e5;
-  background-color: #0d0d0d;
+  background-color: #0f0d0c; /* hsl(20 8% 6%) */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -20,38 +20,72 @@ body {
   min-height: 100vh;
 }
 
-/* Custom scrollbar - dark */
+/* Terminal-style scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #1a1a1a;
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #404040;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #525252;
+  background: rgba(255, 255, 255, 0.15);
 }
 
-/* Checkbox custom style - dark */
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(23, 20, 18, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+  background: rgba(23, 20, 18, 0.7);
+}
+
+/* Terminal glow effect */
+.terminal-glow {
+  box-shadow: 0 0 20px rgba(232, 124, 46, 0.1),
+              inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Checkbox custom style - terminal */
 .checkbox-custom {
-  @apply w-5 h-5 rounded border-2 border-neutral-600 cursor-pointer transition-all duration-200 bg-neutral-800;
+  @apply w-5 h-5 rounded border cursor-pointer transition-all duration-200;
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.12);
 }
 
 .checkbox-custom:checked {
-  @apply bg-claude-600 border-claude-600;
+  @apply bg-claude-500 border-claude-500;
 }
 
 .checkbox-custom:hover:not(:disabled) {
-  @apply border-claude-500;
+  border-color: rgba(232, 124, 46, 0.5);
 }
 
 .checkbox-custom:disabled {
   @apply opacity-50 cursor-not-allowed;
+}
+
+/* Button glow on hover */
+.btn-glow:hover {
+  box-shadow: 0 0 20px rgba(232, 124, 46, 0.3),
+              0 0 40px rgba(232, 124, 46, 0.1);
+}
+
+/* Text selection */
+::selection {
+  background: rgba(232, 124, 46, 0.3);
+  color: #fff;
 }

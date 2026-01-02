@@ -2,7 +2,7 @@
 
 Desktop installer for Claude Code CLI and development tools. Download, double-click, install.
 
-![Claude Code Installer](https://img.shields.io/badge/version-1.0.0-blue) ![Platforms](https://img.shields.io/badge/platforms-Windows%20|%20macOS%20|%20Linux-green)
+![Claude Code Installer](https://img.shields.io/badge/version-1.1.0-blue) ![Platforms](https://img.shields.io/badge/platforms-Windows%20|%20macOS%20|%20Linux-green)
 
 ## Download
 
@@ -10,13 +10,13 @@ Desktop installer for Claude Code CLI and development tools. Download, double-cl
 
 | Platform | Download | Architecture |
 |----------|----------|--------------|
-| **Windows** | [Claude Code Installer.exe](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/Claude.Code.Installer_1.0.0_x64-setup.exe) | x64 |
-| **macOS (Apple Silicon)** | [Claude Code Installer.dmg](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/Claude.Code.Installer_1.0.0_aarch64.dmg) | ARM64 |
-| **macOS (Intel)** | [Claude Code Installer.dmg](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/Claude.Code.Installer_1.0.0_x64.dmg) | x64 |
-| **Linux** | [Claude Code Installer.AppImage](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/claude-code-installer_1.0.0_amd64.AppImage) | x64 |
-| **Linux (Debian)** | [claude-code-installer.deb](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/claude-code-installer_1.0.0_amd64.deb) | x64 |
+| **Windows** | [Claude Code Installer.exe](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/Claude.Code.Installer_1.1.0_x64-setup.exe) | x64 |
+| **macOS (Apple Silicon)** | [Claude Code Installer.dmg](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/Claude.Code.Installer_1.1.0_aarch64.dmg) | ARM64 |
+| **macOS (Intel)** | [Claude Code Installer.dmg](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/Claude.Code.Installer_1.1.0_x64.dmg) | x64 |
+| **Linux** | [Claude Code Installer.AppImage](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/claude-code-installer_1.1.0_amd64.AppImage) | x64 |
+| **Linux (Debian)** | [claude-code-installer.deb](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/claude-code-installer_1.1.0_amd64.deb) | x64 |
 
-> **Note**: Download links will work after the release is published. To create a new release: `git tag v1.1.0 && git push origin v1.1.0`
+> **Note**: Download links will work after the release is published.
 
 ## Features
 

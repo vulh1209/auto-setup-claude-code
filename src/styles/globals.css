@@ -1,0 +1,57 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c4c4c4;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Checkbox custom style */
+.checkbox-custom {
+  @apply w-5 h-5 rounded border-2 border-gray-300 cursor-pointer transition-all duration-200;
+}
+
+.checkbox-custom:checked {
+  @apply bg-claude-600 border-claude-600;
+}
+
+.checkbox-custom:hover:not(:disabled) {
+  @apply border-claude-400;
+}
+
+.checkbox-custom:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}

@@ -1,137 +1,123 @@
-# Auto Setup Claude Code CLI
+# Claude Code Installer
 
-One-click installer for Claude Code CLI and development tools across Windows, macOS, and Linux.
+Desktop installer for Claude Code CLI and development tools. Download, double-click, install.
 
-## Quick Install (One-liner)
+![Claude Code Installer](https://img.shields.io/badge/version-1.0.0-blue) ![Platforms](https://img.shields.io/badge/platforms-Windows%20|%20macOS%20|%20Linux-green)
 
-### Default (Node.js + Claude Code)
+## Download
 
-**Windows (PowerShell)**
-```powershell
-irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.ps1 | iex
-```
+### Latest Release
 
-**macOS / Linux**
-```bash
-curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.sh | bash
-```
+| Platform | Download | Architecture |
+|----------|----------|--------------|
+| **Windows** | [Claude Code Installer.exe](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/Claude.Code.Installer_1.0.0_x64-setup.exe) | x64 |
+| **macOS (Apple Silicon)** | [Claude Code Installer.dmg](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/Claude.Code.Installer_1.0.0_aarch64.dmg) | ARM64 |
+| **macOS (Intel)** | [Claude Code Installer.dmg](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/Claude.Code.Installer_1.0.0_x64.dmg) | x64 |
+| **Linux** | [Claude Code Installer.AppImage](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/claude-code-installer_1.0.0_amd64.AppImage) | x64 |
+| **Linux (Debian)** | [claude-code-installer.deb](https://github.com/vulh1209/auto-setup-claude-code/releases/latest/download/claude-code-installer_1.0.0_amd64.deb) | x64 |
 
-### Install Everything (Full Setup)
+> **Note**: Download links will be available after the first release. To create a release, push a tag: `git tag v1.0.0 && git push origin v1.0.0`
 
-**Windows (PowerShell)**
-```powershell
-iex "& { $(irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.ps1) } -All"
-```
+## Features
 
-**macOS / Linux**
-```bash
-curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.sh | bash -s -- --all
-```
+- **Simple GUI** - Just check the tools you want and click Install
+- **Cross-platform** - Works on Windows, macOS, and Linux
+- **Lightweight** - Only ~2MB download (thanks to Tauri)
+- **Auto-detect** - Shows which tools are already installed
 
-### Verify & Fix Issues (Windows only)
-
-**Windows (PowerShell)** - Check system and auto-fix common issues:
-```powershell
-iex "& { $(irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.ps1) } -Verify"
-```
-
-This will:
-- Check PowerShell Execution Policy and fix if needed
-- Verify Node.js, npm, and Claude Code installation
-- Auto-fix PATH issues
-- Offer to install missing components
-
-### Custom Installation
-
-**macOS / Linux** - Select specific tools:
-```bash
-# Install Git and Bun only
-curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.sh | bash -s -- --git --bun
-
-# Install Node.js, Claude Code, and VS Code
-curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/setup.sh | bash -s -- --node --claude --vscode
-```
-
-**Available Options:**
-| Option | Description |
-|--------|-------------|
-| `--all` / `-All` | Install everything |
-| `--node` / `-Node` | Install Node.js |
-| `--claude` / `-Claude` | Install Claude Code CLI |
-| `--git` / `-Git` | Install Git |
-| `--vscode` / `-VSCode` | Install VS Code |
-| `--bun` / `-Bun` | Install Bun |
-| `-Verify` | Verify system and fix common issues (Windows only) |
-
-## What Gets Installed
+## What You Can Install
 
 | Tool | Description |
 |------|-------------|
-| **Node.js** | JavaScript runtime (latest stable) |
-| **npm** | Node package manager |
-| **Claude Code CLI** | Anthropic's official CLI for Claude |
+| **Node.js** | JavaScript runtime (required for Claude Code) |
+| **Claude Code CLI** | Anthropic's official AI coding assistant |
 | **Git** | Version control system |
 | **VS Code** | Code editor |
 | **Bun** | Fast JavaScript runtime & toolkit |
 
-## Menu Options
+## Screenshots
 
 ```
-[1] Install All (Node.js + Claude Code)
-[2] Install Node.js only
-[3] Install Claude Code CLI only
-[4] Install Git
-[5] Install VS Code
-[6] Install Bun (fast JS runtime)
-[7] Install Everything (Full Setup)
-[8] Check installed versions
-[9] Uninstall Claude Code CLI
-[V] Verify & Fix Common Issues
-[0] Exit
+┌─────────────────────────────────────────────────┐
+│  Claude Code Installer                          │
+│  macOS • arm64 • brew                           │
+├─────────────────────────────────────────────────┤
+│                                                 │
+│   Select tools to install:                      │
+│                                                 │
+│   [x] Node.js        (Required for Claude Code) │
+│   [x] Claude Code CLI (AI coding assistant)     │
+│   [ ] Git            (Version control)          │
+│   [ ] VS Code        (Code editor)              │
+│   [ ] Bun            (Fast JS runtime)          │
+│                                                 │
+│              [ Install Selected (2) ]           │
+│                                                 │
+└─────────────────────────────────────────────────┘
 ```
 
-## One-Click Install (Windows)
+## CLI Scripts (Legacy)
 
-Download and double-click to install:
+If you prefer command-line installation, the original scripts are still available in `scripts/legacy/`:
 
-| File | Description | Download |
-|------|-------------|----------|
-| `install.bat` | Interactive menu installer | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/install.bat) |
-| `verify.bat` | Verify & fix issues | [Download](https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/verify.bat) |
+### Quick Install (One-liner)
 
-## Manual Installation
-
-### Windows
+**Windows (PowerShell)**
 ```powershell
-# Option 1: Run directly
-.\setup.ps1
-
-# Option 2: Double-click setup.bat (requires setup.ps1)
-setup.bat
+irm https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/scripts/legacy/setup.ps1 | iex
 ```
 
-### macOS / Linux
+**macOS / Linux**
 ```bash
-chmod +x setup.sh
-./setup.sh
+curl -fsSL https://raw.githubusercontent.com/vulh1209/auto-setup-claude-code/main/scripts/legacy/setup.sh | bash
 ```
+
+## Building from Source
+
+### Prerequisites
+
+1. **Rust** (1.70+)
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
+
+2. **Node.js** (18+)
+
+3. **Platform-specific dependencies**:
+   - **macOS**: `xcode-select --install`
+   - **Ubuntu/Debian**: `sudo apt install libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev`
+   - **Fedora**: `sudo dnf install webkit2gtk4.1-devel libappindicator-gtk3-devel librsvg2-devel`
+
+### Build
+
+```bash
+# Install dependencies
+npm install
+
+# Development mode
+npm run tauri dev
+
+# Production build
+npm run tauri build
+```
+
+Output files will be in `src-tauri/target/release/bundle/`.
 
 ## Supported Platforms
 
 | Platform | Package Manager |
 |----------|-----------------|
 | Windows 10/11 | winget |
-| macOS | Homebrew |
+| macOS 10.15+ | Homebrew |
 | Ubuntu/Debian | apt |
 | Fedora/RHEL | dnf |
 | Arch Linux | pacman |
 
-## Requirements
+## Tech Stack
 
-- **Windows**: PowerShell 5.1+
-- **macOS**: macOS 10.15+ (Catalina or later)
-- **Linux**: Bash shell
-- **All**: Internet connection
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Backend**: Rust + Tauri 2.0
+- **Build**: Vite + Tauri CLI
 
 ## License
 

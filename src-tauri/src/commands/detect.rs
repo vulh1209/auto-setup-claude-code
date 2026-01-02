@@ -83,6 +83,34 @@ fn command_exists(cmd: &str) -> bool {
 }
 
 fn get_version(cmd: &str, args: &[&str]) -> Option<String> {
+    // First try direct command
+    if let Some(version) = run_command(cmd, args) {
+        return Some(version);
+    }
+
+    // On macOS/Linux, try running through shell to get proper PATH
+    #[cfg(not(target_os = "windows"))]
+    {
+        let shell_cmd = format!("{} {}", cmd, args.join(" "));
+        if let Ok(output) = Command::new("bash")
+            .args(["-l", "-c", &shell_cmd])
+            .output()
+        {
+            if output.status.success() {
+                if let Ok(version) = String::from_utf8(output.stdout) {
+                    let trimmed = version.trim();
+                    if !trimmed.is_empty() {
+                        return Some(trimmed.to_string());
+                    }
+                }
+            }
+        }
+    }
+
+    None
+}
+
+fn run_command(cmd: &str, args: &[&str]) -> Option<String> {
     Command::new(cmd)
         .args(args)
         .output()
@@ -92,6 +120,7 @@ fn get_version(cmd: &str, args: &[&str]) -> Option<String> {
                 String::from_utf8(output.stdout)
                     .ok()
                     .map(|s| s.trim().to_string())
+                    .filter(|s| !s.is_empty())
             } else {
                 None
             }

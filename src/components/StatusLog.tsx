@@ -14,13 +14,13 @@ function StatusLog({ logs }: StatusLogProps) {
   const getLogStyles = (type: LogEntry["type"]) => {
     switch (type) {
       case "success":
-        return "text-green-700 bg-green-50";
+        return "text-green-400 bg-green-950/30";
       case "error":
-        return "text-red-700 bg-red-50";
+        return "text-red-400 bg-red-950/30";
       case "warning":
-        return "text-amber-700 bg-amber-50";
+        return "text-amber-400 bg-amber-950/30";
       default:
-        return "text-gray-700 bg-gray-50";
+        return "text-neutral-300 bg-neutral-900";
     }
   };
 
@@ -58,7 +58,7 @@ function StatusLog({ logs }: StatusLogProps) {
         );
       default:
         return (
-          <svg className="w-4 h-4 text-gray-500" fill="currentColor" viewBox="0 0 20 20">
+          <svg className="w-4 h-4 text-neutral-400" fill="currentColor" viewBox="0 0 20 20">
             <path
               fillRule="evenodd"
               d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
@@ -70,17 +70,17 @@ function StatusLog({ logs }: StatusLogProps) {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden max-h-48 overflow-y-auto">
+    <div className="bg-neutral-900 border border-neutral-800 rounded-lg overflow-hidden max-h-48 overflow-y-auto">
       {logs.map((log, index) => (
         <div
           key={index}
           className={`flex items-start gap-2 px-3 py-2 text-sm ${getLogStyles(
             log.type
-          )} ${index !== logs.length - 1 ? "border-b border-gray-100" : ""}`}
+          )} ${index !== logs.length - 1 ? "border-b border-neutral-800" : ""}`}
         >
           <span className="flex-shrink-0 mt-0.5">{getLogIcon(log.type)}</span>
           <span className="flex-1 break-words">{log.message}</span>
-          <span className="flex-shrink-0 text-xs text-gray-400">
+          <span className="flex-shrink-0 text-xs text-neutral-500">
             {log.timestamp.toLocaleTimeString()}
           </span>
         </div>

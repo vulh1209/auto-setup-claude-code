@@ -20,10 +20,10 @@ function ToolSelector({
           key={tool.id}
           className={`flex items-center gap-3 p-3 rounded-lg border transition-all duration-200 cursor-pointer ${
             tool.installed
-              ? "bg-green-50 border-green-200"
+              ? "bg-green-950/50 border-green-800"
               : selectedTools.has(tool.id)
-              ? "bg-claude-50 border-claude-200"
-              : "bg-white border-gray-200 hover:border-gray-300"
+              ? "bg-claude-950/50 border-claude-700"
+              : "bg-neutral-900 border-neutral-800 hover:border-neutral-700"
           } ${disabled ? "opacity-60 cursor-not-allowed" : ""}`}
         >
           <input
@@ -35,14 +35,14 @@ function ToolSelector({
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-gray-900">{tool.name}</span>
+              <span className="font-medium text-neutral-100">{tool.name}</span>
               {tool.required && !tool.installed && (
-                <span className="text-xs px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded">
+                <span className="text-xs px-1.5 py-0.5 bg-amber-900/50 text-amber-400 rounded">
                   Required
                 </span>
               )}
               {tool.installed && (
-                <span className="text-xs px-1.5 py-0.5 bg-green-100 text-green-700 rounded flex items-center gap-1">
+                <span className="text-xs px-1.5 py-0.5 bg-green-900/50 text-green-400 rounded flex items-center gap-1">
                   <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                     <path
                       fillRule="evenodd"
@@ -54,10 +54,10 @@ function ToolSelector({
                 </span>
               )}
             </div>
-            <p className="text-sm text-gray-500 truncate">
+            <p className="text-sm text-neutral-400 truncate">
               {tool.description}
               {tool.version && (
-                <span className="text-gray-400"> • {tool.version}</span>
+                <span className="text-neutral-500"> • {tool.version}</span>
               )}
             </p>
           </div>

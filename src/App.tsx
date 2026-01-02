@@ -155,9 +155,9 @@ function App() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div className="min-h-screen bg-neutral-950 flex flex-col">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+      <header className="bg-neutral-900 border-b border-neutral-800 px-6 py-4">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 bg-claude-600 rounded-lg flex items-center justify-center">
             <svg
@@ -175,11 +175,11 @@ function App() {
             </svg>
           </div>
           <div>
-            <h1 className="text-lg font-semibold text-gray-900">
+            <h1 className="text-lg font-semibold text-neutral-100">
               Claude Code Installer
             </h1>
             {systemInfo && (
-              <p className="text-sm text-gray-500">
+              <p className="text-sm text-neutral-400">
                 {getOsLabel(systemInfo.os)} • {systemInfo.arch}
                 {systemInfo.package_manager &&
                   ` • ${systemInfo.package_manager}`}
@@ -192,7 +192,7 @@ function App() {
       {/* Main content */}
       <main className="flex-1 p-6">
         <div className="mb-4">
-          <h2 className="text-sm font-medium text-gray-700 mb-3">
+          <h2 className="text-sm font-medium text-neutral-300 mb-3">
             Select tools to install:
           </h2>
           <ToolSelector
@@ -213,13 +213,13 @@ function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 px-6 py-4">
+      <footer className="bg-neutral-900 border-t border-neutral-800 px-6 py-4">
         <button
           onClick={handleInstall}
           disabled={isInstalling || toolsToInstallCount === 0}
           className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-200 ${
             isInstalling || toolsToInstallCount === 0
-              ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+              ? "bg-neutral-800 text-neutral-500 cursor-not-allowed"
               : "bg-claude-600 text-white hover:bg-claude-700 active:bg-claude-800"
           }`}
         >
